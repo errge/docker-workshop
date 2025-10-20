@@ -2,11 +2,11 @@
 1. Editor with support for Dockerfile and YAML (e.g. Emacs, VIM, vs-code, ...)
   - check that indentation is working
   - check that syntax highlighting is working
-2. Docker (on Linux) or Docker Desktop (on Windows and Mac OSX)
+2. Docker (on Linux) or Docker Desktop (on Windows and macOS)
 3. Comfortable terminal for issuing commands and experimenting, e.g.:
   - urxvt/xterm/gnome-terminal on Linux
-  - iterm2 on OSX
-  - Windows Terminal on Windows
+  - Terminal.app on macOS (installed by default)
+  - Windows Terminal on Windows (available from the Windows Store)
 
 The workshop will be editor and terminal independent, so just bring
 something you are comfortable with, if you are not comfortable with
@@ -66,31 +66,25 @@ apt install docker.io
 After the installation has finished, restart your machine and go to
 the testing section above.
 
-## Docker Desktop installation on OSX
-The easiest way to install stuff on OSX, is to have the brew package
-manager installed.
-
-You can see if brew installed with the command `brew doctor`.  This
-should print `Your system is ready to brew.`, if brew is already
-installed.
-
-If brew is not installed yet, you can use this command for the
-installation (in a terminal window):
-
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/install/HEAD/install)"
-```
-
-Once brew is installed, you can install docker with:
+## Docker Desktop installation on macOS with Brew
+The easiest way to install stuff on macOS, is to have the brew package
+manager installed, if you already have that you can use it to install
+Docker Desktop like this:
 
 ```
 brew install --cask docker
 ```
 
 After a restart, you can start Docker Desktop from the Applications in
-OSX, and you will have to do this after every restart.  Once Docker
+macOS, and you will have to do this after every restart.  Once Docker
 Desktop is running, go back to the testing chapter, and make sure that
 it's fully functional.
+
+## Docker Desktop installation on macOS without Brew
+If you don't have `brew` installed yet, then just for the Docker
+installation it's not really worth to set it all up.
+
+You can follow these instructions instead: [https://docs.docker.com/desktop/setup/install/mac-install/](https://docs.docker.com/desktop/setup/install/mac-install/).
 
 ## Docker Desktop installation on Windows
 For windows installation of Docker Desktop, find information here:
