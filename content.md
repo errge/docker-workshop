@@ -62,9 +62,16 @@ Notes:
   - flag `f`: forking new shell (needed for PID namespace)
   - flag `mount-proc`: mounting new /proc (for `ps`)
   - to make this actually useful, a lot more plumbing is needed (network virtual interfaces, disk space management, etc.)
+  - this plumbing is what Docker does
 
 # Docker
+Docker is a convenient CLI interface for managing namespaces together with cgroups (and we call these combos containers).
+
+Docker is not the only container management framework, there are others (podman, cri-o, containerd, etc.).
+
 ## Architecture (docker daemon, docker client)
+![Docker architecture](images/docker-architecture.webp)
+
 ### Consequence: Docker Desktop on OSX
 ## "docker run --rm -it" for small cli experiments (e.g. shyaml)
 ## "docker run --rm -it -p 3000:8080" for small web experiments
