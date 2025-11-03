@@ -72,14 +72,62 @@ Docker is not the only container management framework, there are others (podman,
 ## Architecture (docker daemon, docker client)
 ![Docker architecture](images/docker-architecture.webp)
 
-### Consequence: Docker Desktop on OSX
+On a standard Linux workstation:
+
+  - docker client: `docker` command line in a terminal window
+  - docker host: the linux workstation itself, running the docker daemon (e.g. from systemd)
+  - image registry: docker hub or any other public registry (e.g. github, google cloud, etc.)
+
+In our case (CX):
+
+  - docker client: the web UI on expert.ethz.ch (of course everything is graphical and students just press buttons)
+  - docker host: the machines that scale out the student jobs (we call them runners)
+  - image registry: cxhub.ethz.ch, operated by CX/ISG
+
+Docker on Windows and macOS:
+
+  - docker client: terminal window on the real host OS
+  - docker host: a Linux VM managed by Windows/macOS (not really visible/accessible, but it's there, we need the Linux kernel)
+
+In case of Windows/macOS this additional layer of Linux VM will cause some troubles, as we will see.
+For now, it's enough to remember, that in some sense the native platform for Docker is Linux.
+
 ## "docker run --rm -it" for small cli experiments (e.g. shyaml)
-## "docker run --rm -it -p 3000:8080" for small web experiments
-## Everyday commands: exec, ps, rm, images, rmi
+Example: experimenting with https://github.com/0k/shyaml (part of some CX shell scripts)
+
+```
+docker run --rm -it nilcons/debian /bin/bash
+  apt update
+  apt install pip
+  pip install --break-system-packages shyaml
+  echo src: / >>/test.yaml
+  echo out: /bin >>/test.yaml
+  cat /test.yaml | shyaml get-value out ; echo
+```
+
+Notes:
+  - once we exit the shell, the container is fully deleted, no mess on our machine
+  - during the experiments the environment is secure, no risk for the host
+  - can run untrusted code, and we don't have to be careful with our commands
+
+## Long running docker containers
+### ps
+### start
+### stop
+### kill
+### rm
+### exec
+## Image management
+### images
+### rmi
+### TODO check cxhub pull without auth but on ethz/eduroam wifi
+## TODO exercises from learnk8s
 ## Volumes
 ### host file sharing (docker -v ./asfdsaf:/data)
 ### data persistence (docker -v my-volume:/data)
 ## Networking tricks
+### port forward
+"docker run --rm -it -p 3000:8080" for small web experiments
 ### --network=none
 ### --network=host (Windows notes, security)
 ## Container vs host user
