@@ -23,10 +23,16 @@ instructions below, and you can come back to testing later.)
 ## Testing
 Your install has to be able to pull containers from the internet and
 run them in the command line on your own laptop.  To test if the
-installation is correct, run this command in a terminal:
+installation is correct, run this command in a terminal (OSX/Linux):
 
 ```
 docker run -it --rm nilcons/debian /bin/bash -c 'echo $(hostname) $(uname -m) hello lecturers'
+```
+
+If you are using Windows with CMD (not with WSL), the command to test is:
+
+```
+docker run -it --rm nilcons/debian /bin/bash -c "echo $(hostname) $(uname -m) hello lecturers"
 ```
 
 For me, this is printed:
