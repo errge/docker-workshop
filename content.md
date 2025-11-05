@@ -61,6 +61,8 @@ sudo -i
       sleep 420   # exercise: how many PIDs does this sleep have? use nsenter to find out!
 ```
 
+<!-- Answer: 3 PIDs on the 3 levels. -->
+
 Notes:
   - flag `mnup`: mount, network, UTS (hostname), pid namespaces are isolated
   - flag `f`: forking new shell (needed for PID namespace)
@@ -165,41 +167,171 @@ this is done automatically on container exit when `docker run --rm` was used.
 ## TODO Exercise: something from learnk8s
 
 ## Image management
-But what are these `nilcons/debian` things that we can instantiate?
+But what are these `nilcons/debian` things that we instantiate to containers?
 
 These are called images, think: "snapshot", containing the root filesystem of a VM.
 
 They are stored on image servers (so called image registries), the
 biggest public and default registry being https://hub.docker.com .
 
-The real name for our image is actually `docker.io/nilcons/debian`,
-but the docker client defaults to the `docker.io` image registry server.
+The real name for our image is actually `docker.io/nilcons/debian:latest`,
+but the docker client defaults to the `docker.io` image registry server,
+and `latest` is the default version.
 
-### Image cache
+### Image cache, tags, cleanup
 Images are always cached locally, you can see the cache with `docker images`.
 
-Similarly to images TODO
+Similarly to containers, images have IDs and names (called tags).
 
-### rmi
-### TODO check cxhub pull without auth but on ethz/eduroam wifi
-## Dockerfile syntax and semantics
-### Layer and storage tree (CoW: OverlayFS, Btrfs)
-### Data layers: FROM, RUN
-### Metadata layers: ENTRYPOINT, CMD, WORKDIR, USER, ENV
-## TODO Dockerfileexercises from learnk8s
+Notes:
+  - an image can have multiple tags
+  - pulled images get the tag how they were pulled (e.g. `nilcons/debian`)
+  - local image tags can be arbitrary strings
+  - a local image can only be pushed to a registry, if they already have the correct tag
+
+Create new tag for already exisiting image (think of it like your bookmark);
+
+```
+docker tag nilcons/debian the-one-we-used-on-the-workshop
+```
+
+Remove just one tag (and delete layers if it was the last tag):
+
+```
+docker rmi alpine/crane
+```
+
+See space usage:
+
+```
+docker system df
+```
+
+Remove intermediary untagged images (we will talk about them later):
+
+```
+docker image prune
+```
+
+Remove all unused images (no container running from them right now):
+
+```
+docker image prune -a
+```
+
+### Building our own images: Dockerfile
+Empty directory with a simple `Dockerfile`:
+```
+FROM nilcons/debian
+RUN apt-get update
+RUN apt-get -y install figlet
+```
+
+Build it with: `docker build -t deb-figlet .`
+
+After build:
+  - try it out!
+  - `docker image history deb-figlet`
+  - `docker inspect image deb-figlet`
+  - explain layers and storage tree!
+  - explain and try out `CMD` and `ENTRYPOINT`
+  - other important metadata stuff: `ENV`, `WORKDIR`
+  - use `COPY` to have an embedded test file
+
+### TODO Dockerfileexercises from learnk8s
 ## Volumes
-### host file sharing (docker -v ./asfdsaf:/data)
-### data persistence (docker -v my-volume:/data)
-## Networking tricks
-### port forward
-"docker run --rm -it -p 3000:8080" for small web experiments
-### --network=none
-### --network=host (Windows notes, security)
-## Container vs host user
-### Running as root
-### Running as user (but still exec as root)
-## docker socket mounting
+The default Docker isolation is great for experiments, but we
+sometimes need exposure to the real world!
 
+For example:
+  - file sharing with host for persistent data files
+  - implementing web based projects that we want to publish (on our real IP)
+
+### host file sharing (docker run -v ./container-data:/data)
+Run a container with `--rm` and host file sharing multiple times and
+check that the data is persistent!
+
+Discussion: how fast is the data synchronization between the host and
+the container?
+
+<!-- Answer (as always): it depends, it's also a trick question.
+
+On Linux: there is no synchronization at all, so instantaneous.
+
+On macOS/Windows: there is a sync speed, that actually can be a bottleneck.
+-->
+
+### data persistence (docker run -v my-volume:/data)
+Alternative: instead of using local directories for persisting your
+data, docker can take over the volume management for you.
+
+Try it out and show `docker volume ls`
+
+### Container vs host user
+By default, processes in a container are running as root (uid 0).
+
+What effect does this have on file permissions?
+
+<!-- Answer: no usernames in the kernel, only UIDs, so everything
+that is created in the container will be owned by root outside. -->
+
+Can be overridden in the command line:
+
+```
+docker run -it --rm --user 1000:1000 nilcons/debian id
+```
+
+Or in a shell script (best practice pattern, can see this a lot):
+
+```
+docker run -it --rm --user `id -u`:`id -g` nilcons/debian id
+```
+
+Question: why the uid and the gid are without username inside (it's correct outside)?
+
+<!-- Answer: no user in /etc/passwd and no group in /etc/group, username -->
+<!-- and group names are a user-space concept, in the kernel there are only UID/GIDs. -->
+
+Override can also happen in the `Dockerfile` with `USER`.
+
+Note: can still be overridden for exec `--user 0:0`, no security
+against the host, it's your computer fully if you are root on the host!
+
+### TODO Exercise?
+## Networking
+### port forward: docker run -p 3000:8080
+Try it out with `stefanprodan/podinfo`.
+
+### --network=none
+Very useful for airgapping some app, you don't trust (e.g. from a clever student).
+
+### --network=host
+If you want to have the same `localhost`, and want all ports to be exposed by default.
+
+Not a good practice, mostly for debugging, not for production, security implications.
+
+Doesn't really work on macOS and Windows, why?
+
+### TODO Network exercise from learnk8s
+## docker socket mounting
+Kernel namespaces and cgroup recursion is historically difficult, they
+are working on it.
+
+Clean docker in docker is therefore with restrictions (today better
+than 5 years ago, but still).
+
+Workaround: using `-v` to pass in the docker unix socket from outside,
+and then a program that is running in the container can talk to docker
+to start/delete/manage containers.
+
+This provides no security, because if the app is hacked, the attacker
+can create a fully privileged docker container with shell, that has
+the whole host machine root directory mounted with `-v`.
+
+In practice, this is still useful to manage dependencies of the app
+with `Dockerfile`s and images.
+
+This is what we are doing currently on our runners.
 
 # Lunch
 
