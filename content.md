@@ -164,7 +164,10 @@ If a stopped container is needed again, it can be started with `docker start`.
 A container (and all its storage) can be deleted with `docker rm`, or
 this is done automatically on container exit when `docker run --rm` was used.
 
-## TODO Exercise: something from learnk8s
+## Exercise: inspecting a file
+The image `ttl.sh/docker-workshop-ethz-inspect:24h` has a `hello.txt` file in the `/app` folder.
+
+Can you retrieve the content of that file?
 
 ## Image management
 But what are these `nilcons/debian` things that we instantiate to containers?
@@ -238,7 +241,30 @@ After build:
   - other important metadata stuff: `ENV`, `WORKDIR`
   - use `COPY` to have an embedded test file
 
-### TODO Dockerfileexercises from learnk8s
+### Exercise: encrypted message
+Create a `Dockerfile` that inherits from `ttl.sh/docker-workshop-ethz-encrypted:24h`.
+
+The `Dockerfile` should create the following folders:
+
+  - `/data/folder1/`
+  - `/home/ubuntu/Documents/`
+
+There should be a file in `/home/ubuntu/Documents/message.txt` with this content:
+
+```
+rmUCPf4e7NySq91PSS8svLakkC79JkJe033KN2nr3TkPdcbmmz/bSrUatoskX5Pj78Qntd2cornRAjvF
+snkgLAiNF5cElGQD2cYI7fYN7WKsfuE3pmNgSuuYJbBtSTduT/Tc1IeoV/6xycjQ1cW1A+Hz1yG2qpqI
+K5k+CaGnXbMco0W1/BEjMxC6Nhf7QAtJSxpM+7s5Fb7cXpMVJuRSrQ/Briy8DNvqeD2TIiGAukvXzB9V
+NNaYaClsvBPTpfNdgncae3do3FXjDXw4FltSzcm+WWp+an1YNG0fXL+/qaV2A3Xsf2Cw1fVWI7KTx+M4
+M4yFDB6D0Yl8mCrk8ecxllaeF2RaPn1eRk47efQhT1z0n0zvIltvlZbXf+4f+KoCIOq3cqLoBsA3FRDA
+fDEWpQ05TMxnE2Ev6C2nLMdWFLv4WD6bTp5hxlMMbPduzO7rvJ52WcEz5mOhjoCCGXneX94YvPEM4t5C
+lfXRenn7mV7Wxjn1TDSH8nzWWnxWsg1ELquYxqmnmnXZ6P4zN/K1atNue28sxaoTD6uHLCFDqY5MDbHw
+e8u+HtrWpwfb026b/hLcWe3JoHk0kDR+QwgO4xnpQsFjkJzljjQp0pN0V+ICmsoRgoE1O6/IB608cGtG
+F8EOEgBBHExkeiyYs49/La2FqBKRu5UTZ7bHVbzblNY=
+```
+
+Let's build the image, run it, and get the decrypted message!
+
 ## Volumes
 The default Docker isolation is great for experiments, but we
 sometimes need exposure to the real world!
