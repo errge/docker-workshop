@@ -323,7 +323,14 @@ Override can also happen in the `Dockerfile` with `USER`.
 Note: can still be overridden for exec `--user 0:0`, no security
 against the host, it's your computer fully if you are root on the host!
 
-### TODO Exercise?
+### Exercise: attention to details
+Run `ttl.sh/docker-workshop-ethz-details:24h` and fix the missing details!
+
+Running the container correctly will reveal the code to solve the challenge.
+
+This exercise is kinda difficult in the sense, that you have to know a bit
+of unix/linux too, and be creative, work in teams if you want!
+
 ## Networking
 ### port forward: docker run -p 3000:8080
 Try it out with `stefanprodan/podinfo`.
@@ -338,7 +345,11 @@ Not a good practice, mostly for debugging, not for production, security implicat
 
 Doesn't really work on macOS and Windows, why?
 
-### TODO Network exercise from learnk8s
+### Exercise: connecting to TCP
+A container image with a TCP server is available at `ttl.sh/docker-workshop-ethz-tcp:24h`.
+
+You should find the port of the server and send a specific payload to it to get the solution.
+
 ## docker socket mounting
 Kernel namespaces and cgroup recursion is historically difficult, they
 are working on it.
