@@ -1,0 +1,32 @@
+1..4
+ok 1 - Teste, ob eine Funktion "is_palindrome" existiert, welche einen String als Eingabe entgegennimmt und einen Boolean zurückgibt (Anforderung 1) 
+---
+Hint: |
+  Definiere eine Funktion mit dem Namen "is_palindrome" mit einem Parameter, die einen Boolean (True oder False) zurückgibt
+Test runtime: |
+  0.001 seconds
+...
+ok 2 - Teste, ob die Funktion True zurückgibt, wenn sie ein Palindrom als Eingabe erhält (Anforderung 2)
+---
+Hint: |
+  Wenn die Funktion ein Palindrom (z.B. "kajak", "hannah" oder "lagerregal") als Eingabe erhält, soll sie True zurückgeben
+      
+Test runtime: |
+  0.0 seconds
+...
+ok 3 - Teste, ob die Funktion False zurückgibt, wenn sie einen leeren String als Eingabe erhält (Anforderung 3)
+---
+Hint: |
+  Wenn die Funktion einen leeren String "" (mit Länge 0) als Eingabe erhält, soll sie False zurückgeben
+      
+Test runtime: |
+  0.0 seconds
+...
+ok 4 - Teste, ob die Funktion False zurückgibt, wenn sie ein Wort als Eingabe erhält, das kein Palindrom ist (Anforderung 4)
+---
+Hint: |
+  Wenn die Funktion ein Wort als Eingabe erhält, das kein Palindrom ist (z.B. "kanu", "hanna" oder "einkaufswagen"), soll sie False zurückgeben
+      
+Test runtime: |
+  0.0 seconds
+...

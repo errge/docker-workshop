@@ -334,20 +334,116 @@ with `Dockerfile`s and images.
 This is what we are doing currently on our runners.
 
 # Lunch
-
 # Code Expert specific: Environments
-## ISG + CX build image (mention level, no details)
-## cxenv base image
-### scripts/ and helpers (.func, .start)
-### cxrun 601 and cxuser 602 + sudoers (and demo of the example project)
-## Code reading: current python-3_11 cxenv repo
-# Demo
-## Build of the python 3.11 image
-## Running the python repl locally
-## Running a complete student project locally
+Let's explore how our student sandboxes are built with docker!
+
+## Try to hack a bit on the student UI
+Go to expert.ethz.ch and load up the palindrom python sample.
+
+Implement a solution, and try a couple of different things:
+  - running
+  - testing
+  - asking for a repl
+
+In the repl, one can:
+
+```
+import subprocess
+subprocess.run(['bash'])
+```
+
+One can even look a bit around:
+  - instead of `route` one can `cat /proc/net/route`
+  - instead of `ifconfig` one can `cat /proc/net/fib_trie`
+  - instead of `ps`, one can `grep -a . /proc/*/cmdline | tr '\0' ' '`
+  - we can see our mounts in `/proc/mounts`
+
+Well, no network, PID namespace is isolated, no mounts are interesting... Sad.
+
+But how was this environment built?
+
+## Dockerfile of the python3.11 environment
+Let's start at https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/python-3_11/-/blob/main/Dockerfile?ref_type=heads
+
+Try to build this image locally:
+
+  - backtrack on the path formed from the `FROM` fields
+  - checkout all the github repos needed
+  - build from the ground up
+  - look into `Dockerfile`s on the way and try to understand them (if we have time)
+
+## Reproduce the repl locally
+Now, that we have the image, let's try to run it, and we see `ACTION` is missing.
+
+Let's do a grep in all our container source files: `grep -r provided *`
+
+Let's read `cxenv-base-rhel8/scripts/.start` a little bit, and we see that
+`ACTION` is an env var, that needs to be provided.
+
+So we can pass this with `-e ACTION=actions` and e.g. `-e ACTIONS=repl`.
+
+But of course `-e ACTIONS=test` still doesn't work, because we have no project.
+
+## Reproduce run/test locally
+Go to the `palindrom` subdir and:
+
+```
+docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=run -it --rm cx/cxenv/python-3_11
+```
+
+Actions defined in `conf.yml` and scripts under `scripts/`.
+
+Reminder: file permissions are problematic, simple solution:
+`sudo chown -R 601:601 .`, but remember to change it back and maybe
+`sudo chmod 0777` the files that you have to edit with your editor.
+
+For simple projects maybe it's best practice to try not to write to
+`/var/lib/cxrun/projectfiles/tmp`, instead use `/tmp`.
+
+
 # Bigger apps in Docker
-## Compose for multiple containers
-## Networking (with compose, e.g. app container connecting to database container)
-## Demo: some open source app that has a db (e.g. zulip, still have to test)
-## Showing to colleagues with port forwarding (or --network=host)
-## If we have time: Portainer demo
+So far we only used single containers, but microservice apps nowadays
+need a lot of apps working together.
+
+For example zulip needs all of this to function:
+
+  - postgres
+  - memcached
+  - redis
+  - rabbitmq
+  - zulip itself
+
+Maintaining, and starting up all of this is a lot of work, and with
+big docker installations easy to lose track which rabbitmq belongs to
+which app.
+
+With docker compose, we can hold together all the parts of an
+installation like this.
+
+## Compose example
+```
+git clone https://github.com/zulip/docker-zulip.git
+```
+
+And look at `docker-compose.yml`
+
+## Configure it
+Register gitlab app at: https://gitlab.inf.ethz.ch/oauth/applications
+
+- Ports to `80xx`
+- `SETTING_EXTERNAL_HOST` to `<IP>:8443`
+- `ZULIP_AUTH_BACKENDS` to `GitLabAuthBackend`
+- `SETTING_SOCIAL_AUTH_GITLAB_KEY` to gitlab api key
+- `SECRETS_social_auth_gitlab_secret` to gitlab api secret
+- `SETTING_SOCIAL_AUTH_GITLAB_API_URL` to `https://gitlab.inf.ethz.ch`
+
+Start with: `docker compose up`
+
+Get realm creation URL with: `docker compose exec -u zulip zulip  /home/zulip/deployments/current/manage.py generate_realm_creation_link`
+
+## Let's play with it
+Try this out together and see how it goes.
+
+## Cleanup
+
+`docker compose rm` + `docker compose down -v`

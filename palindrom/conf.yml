@@ -1,0 +1,10 @@
+script:
+  run: /scripts/run_and_test.sh
+  test: /scripts/test.sh
+  submit: /scripts/test.sh
+  debug: /scripts/test.sh
+  
+runtimeFileGeneration:
+  enabled: false
+  path: 'cx_audit'
+  visible: 'assistant'
