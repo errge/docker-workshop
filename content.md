@@ -25,6 +25,7 @@ Disadvanteges (compared to VMs):
 ## Linux kernel feature #1: cgroups demo (memory and OOM)
 ```
 sudo -i
+  cd /sys/fs/cgroup
   mkdir workshop-test
   cat cgroup.procs   # empty
   echo $$ >cgroup.procs
