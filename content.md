@@ -243,26 +243,24 @@ After build:
   - use `COPY` to have an embedded test file
 
 ### Exercise: encrypted message
-Create a `Dockerfile` that inherits from `ttl.sh/docker-workshop-ethz-encrypted:24h`.
+Create a `Dockerfile` that inherits from `ghcr.io/errge/docker-workshop-encrypted`.
 
-The `Dockerfile` should create the following folders:
-
-  - `/data/folder1/`
-  - `/home/ubuntu/Documents/`
+The `Dockerfile` should create the following folder: `/home/ubuntu/Documents/`.
 
 There should be a file in `/home/ubuntu/Documents/message.txt` with this content:
 
 ```
-rmUCPf4e7NySq91PSS8svLakkC79JkJe033KN2nr3TkPdcbmmz/bSrUatoskX5Pj78Qntd2cornRAjvF
-snkgLAiNF5cElGQD2cYI7fYN7WKsfuE3pmNgSuuYJbBtSTduT/Tc1IeoV/6xycjQ1cW1A+Hz1yG2qpqI
-K5k+CaGnXbMco0W1/BEjMxC6Nhf7QAtJSxpM+7s5Fb7cXpMVJuRSrQ/Briy8DNvqeD2TIiGAukvXzB9V
-NNaYaClsvBPTpfNdgncae3do3FXjDXw4FltSzcm+WWp+an1YNG0fXL+/qaV2A3Xsf2Cw1fVWI7KTx+M4
-M4yFDB6D0Yl8mCrk8ecxllaeF2RaPn1eRk47efQhT1z0n0zvIltvlZbXf+4f+KoCIOq3cqLoBsA3FRDA
-fDEWpQ05TMxnE2Ev6C2nLMdWFLv4WD6bTp5hxlMMbPduzO7rvJ52WcEz5mOhjoCCGXneX94YvPEM4t5C
-lfXRenn7mV7Wxjn1TDSH8nzWWnxWsg1ELquYxqmnmnXZ6P4zN/K1atNue28sxaoTD6uHLCFDqY5MDbHw
-e8u+HtrWpwfb026b/hLcWe3JoHk0kDR+QwgO4xnpQsFjkJzljjQp0pN0V+ICmsoRgoE1O6/IB608cGtG
-F8EOEgBBHExkeiyYs49/La2FqBKRu5UTZ7bHVbzblNY=
+-----BEGIN AGE ENCRYPTED FILE-----
+YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlU0VQbUJpZEd3V0pTcllj
+Z21rUzN1OXQ1OC8zT05Da2hhWFJKbXNrWTF3CnZXWjM5NmM5cWlQQi81dFpkRTNj
+azdGblR6WGpRR0twaXIvTy9kMVhlUjQKLS0tIEdUbWVSckhuYWc1MVlyNWp1cm1I
+TkM0OGw0cUl1SlBmZnFtb3hyYk9YL1UKu5OxaEltguwuikPDky7zbF7BsNG8O8cL
+3rPVRancGMGIcUezfOZil5FUst22gpXFVyhVrGmjmWgt6jr2ggKFdU95g7E4x31H
+5GqWQxskBfejIFho3UXTWNtcu4JChQPAJCyD3ka1dmjJlOM=
+-----END AGE ENCRYPTED FILE-----
 ```
+
+Your `Dockerfile` also has to install the Debian package called `age`.
 
 Let's build the image, run it, and get the decrypted message!
 
