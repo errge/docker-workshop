@@ -345,7 +345,7 @@ Not a good practice, mostly for debugging, not for production, security implicat
 Doesn't really work on macOS and Windows, why?
 
 ### Exercise: connecting to TCP
-A container image with a TCP server is available at `ttl.sh/docker-workshop-ethz-tcp:24h`.
+A container image with a TCP server is available at `ghcr.io/errge/docker-workshop-tcp`.
 
 You should find the port of the server and send a specific payload to it to get the solution.
 

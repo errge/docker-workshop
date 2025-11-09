@@ -112,6 +112,28 @@ jobs:
         provenance: false
         sbom: false
 
+    - name: Build Docker Image for the tcp exercise
+      uses: docker/build-push-action@v5
+      with:
+        platforms: linux/amd64,linux/arm/v7,linux/arm64
+        context: exercises/tcp
+        # Annotations inside the blobs: called docker labels (docker inspect)
+        labels: |
+          org.opencontainers.image.description=${{ env.ncd_description }}
+          org.opencontainers.image.source=${{ env.ncd_source }}
+          org.opencontainers.image.revision=${{ github.sha }}
+          org.opencontainers.image.created=${{ env.ncd_created }}
+        # Annotations in the registry: shows up on web UIs and in regctl
+        outputs: type=image,name=target,${{ env.ncd_annotation }}
+        tags: |
+          ghcr.io/errge/docker-workshop-tcp:sha-${{ env.ncd_shadatetag }}
+          ghcr.io/errge/docker-workshop-tcp:latest
+        push: true
+        # We disable attestations, as it results in an extra
+        # unknown/unknown architecture in ghcr package listing.
+        provenance: false
+        sbom: false
+
 # We have this env section at the end, because the weird quoting that
 # is needed inside of it is breaking emacs highlight behind it...
 env:
