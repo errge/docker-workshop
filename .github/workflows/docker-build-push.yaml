@@ -1,0 +1,75 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Compute tag with SHA and date
+      run: |
+        echo "ncd_shadatetag=${{ github.sha }}-$(date +%Y%m%d)" >> $GITHUB_ENV
+        echo "ncd_created=$(date --rfc-3339=seconds)" >> $GITHUB_ENV
+
+    - name: Compute the big annotation string
+      run: |
+        echo -n ncd_annotation= >> $GITHUB_ENV
+        for i in -index [linux/amd64] [linux/arm64] [linux/arm/v7]; do
+          echo -n "annotation$i.org.opencontainers.image.source=${{ env.ncd_source }}," >> $GITHUB_ENV
+          echo -n "annotation$i.org.opencontainers.image.description=${{ env.ncd_description }}," >> $GITHUB_ENV
+          echo -n "annotation$i.org.opencontainers.image.revision=${{ github.sha }}," >> $GITHUB_ENV
+          echo -n "annotation$i.org.opencontainers.image.created=${{ env.ncd_created }}," >> $GITHUB_ENV
+        done
+        sed -i -e 's/,$//' $GITHUB_ENV
+        echo >> $GITHUB_ENV
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    # Workaround to see correct image hash: https://github.com/docker/build-push-action/issues/461
+    - name: Setup Docker buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Github Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        platforms: linux/amd64,linux/arm/v7,linux/arm64
+        context: exercises/inspect
+        # Annotations inside the blobs: called docker labels (docker inspect)
+        labels: |
+          org.opencontainers.image.description=${{ env.ncd_description }}
+          org.opencontainers.image.source=${{ env.ncd_source }}
+          org.opencontainers.image.revision=${{ github.sha }}
+          org.opencontainers.image.created=${{ env.ncd_created }}
+        # Annotations in the registry: shows up on web UIs and in regctl
+        outputs: type=image,name=target,${{ env.ncd_annotation }}
+        tags: |
+          ghcr.io/errge/docker-workshop-inspect:sha-${{ env.ncd_shadatetag }}
+          ghcr.io/errge/docker-workshop-inspect:latest
+        push: true
+        # We disable attestations, as it results in an extra
+        # unknown/unknown architecture in ghcr package listing.
+        provenance: false
+        sbom: false
+
+# We have this env section at the end, because the weird quoting that
+# is needed inside of it is breaking emacs highlight behind it...
+env:
+  ncd_source: https://github.com/errge/docker-workshop
+  ncd_description: Docker exercise

@@ -166,7 +166,7 @@ A container (and all its storage) can be deleted with `docker rm`, or
 this is done automatically on container exit when `docker run --rm` was used.
 
 ## Exercise: inspecting a file
-The image `ttl.sh/docker-workshop-ethz-inspect:24h` has a `hello.txt` file in the `/app` folder.
+The image `ghcr.io/errge/docker-workshop-inspect` has a `hello.txt` file in the `/app` folder.
 
 Can you retrieve the content of that file?
 
