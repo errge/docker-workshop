@@ -323,7 +323,7 @@ Note: can still be overridden for exec `--user 0:0`, no security
 against the host, it's your computer fully if you are root on the host!
 
 ### Exercise: attention to details
-Run `ttl.sh/docker-workshop-ethz-details:24h` and fix the missing details!
+Run `ghcr.io/errge/docker-workshop-details`. and fix the missing details!
 
 Running the container correctly will reveal the code to solve the challenge.
 
