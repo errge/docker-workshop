@@ -323,12 +323,12 @@ Note: can still be overridden for exec `--user 0:0`, no security
 against the host, it's your computer fully if you are root on the host!
 
 ### Exercise: attention to details
-Run `ghcr.io/errge/docker-workshop-details`. and fix the missing details!
+Run `ghcr.io/errge/docker-workshop-details` and fix the missing details!
 
 Running the container correctly will reveal the code to solve the challenge.
 
 This exercise is kinda difficult in the sense, that you have to know a bit
-of unix/linux too, and be creative, work in teams if you want!
+of unix/linux too; be creative, work in teams if you want!
 
 ## Networking
 ### port forward: docker run -p 3000:8080
