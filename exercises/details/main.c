@@ -12,7 +12,7 @@ int main() {
     char *endptr;
     env_version_num = strtol(version_str, &endptr, 10);
 
-    if (endptr != version_str && *endptr == '\0' && env_version_num > 42) {
+    if (endptr != version_str && *endptr == '\0' && env_version_num >= 42) {
       version_ok = 1;
     }
   }
