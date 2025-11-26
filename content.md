@@ -59,7 +59,11 @@ sudo -i
     ifconfig -a
     ping www.inf.ethz.ch
     unshare -mnupf --mount-proc /bin/bash
-      sleep 420   # exercise: how many PIDs does this sleep have? use nsenter to find out!
+      # exercise: how many PIDs does this sleep have?
+      # next section: we use nsenter to find out!
+      # `exec -a` just names the process, so we can find it later
+      # paranthesis is needed, because of exec replacing the shell
+      (exec -a sleep420 sleep 420)
 ```
 
 <!-- Answer: 3 PIDs on the 3 levels. -->
@@ -70,6 +74,45 @@ Notes:
   - flag `mount-proc`: mounting new /proc (for `ps`)
   - to make this actually useful, a lot more plumbing is needed (network virtual interfaces, disk space management, etc.)
   - this plumbing is what Docker does
+
+## Linux kernel feature #2: namespaces (nsenter demo)
+For cgroups it was trivial to add another process, just echo into
+`/sys/fs/cgroup/CGROUP-NAME/cgroup.procs`, but for namespaces, there
+was no FS API, but a tool, so to enter already existing namespace with
+a new process, we need another tool: `nsenter`.
+
+Do this, while the `sleep 420` still running (from previous section):
+
+```
+pidof sleep420
+sudo nsenter -a -t $(pidof sleep420) pidof sleep420
+sudo nsenter -a -t $(ps -o ppid= $(ps -o ppid= $(ps -o ppid= $(pidof sleep420)))) pidof sleep420
+```
+
+Getting the outermost and innermost PID is easy with `pidof` and `nsenter`.
+
+For the PID in the middle, we have to know some stuff:
+
+  - we use `ps -o ppid=` to get the parent PID of our target
+  - we have to do this 3 times (sleep420 -> bash -> unshare -> bash)
+  - so we enter the same PID namespace as the bash that started the unshare in the middle
+  - we get the middle PID with `pidof`
+
+## Windows and macOS Docker Desktop extra: how to escape?
+On Windows and macOS there is an extra Linux VM ran by Docker Desktop (called Moby VM).
+
+This can be accessed with:
+
+```
+docker run -it --privileged --pid=host nilcons/debian nsenter -t 1 -a bash
+```
+
+What's happening here, is that we jailbreak out of inside a docker container into the host (Moby VM), by:
+
+  - sharing PIDs with the host, so PID 1 is the real linux main init process,
+  - then entering all namespaces of PID 1.
+
+This only works because of `--privileged` (which adds `SYS_PTRACE` and `SYS_ADMIN` privilege), otherwise the kernel doesn't allow this.
 
 # Docker
 Docker is a convenient CLI interface for managing namespaces together with cgroups (and we call these combos containers).
