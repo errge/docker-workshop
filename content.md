@@ -208,6 +208,15 @@ If a stopped container is needed again, it can be started with `docker start`.
 A container (and all its storage) can be deleted with `docker rm`, or
 this is done automatically on container exit when `docker run --rm` was used.
 
+### logs
+When we are running containers in production (detached with `-d`), we
+don't see the stdout and stderr of them.
+
+But docker saves these outputs and keeps them until the container is
+alive, and you can get them anytime with `docker logs`.  Even the
+timestamps are saved, so you will know which line was printed when,
+see `docker logs --help` for more info.
+
 ## Exercise: inspecting a file
 The image `ghcr.io/errge/docker-workshop-inspect` has a `hello.txt` file in the `/app` folder.
 
@@ -390,7 +399,7 @@ Doesn't really work on macOS and Windows, why?
 ### Exercise: connecting to TCP
 A container image with a TCP server is available at `ghcr.io/errge/docker-workshop-tcp`.
 
-You should find the port of the server and send a specific payload to it to get the solution.
+You should find the port of the server and send a specific payload (with `telnet` or `nc`) to it to get the solution.
 
 ## docker socket mounting
 Kernel namespaces and cgroup recursion is historically difficult, they
