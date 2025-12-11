@@ -104,7 +104,7 @@ On Windows and macOS there is an extra Linux VM ran by Docker Desktop (called Mo
 This can be accessed with:
 
 ```
-docker run -it --privileged --pid=host nilcons/debian nsenter -t 1 -a bash
+docker run -it --rm --privileged --pid=host nilcons/debian nsenter -t 1 -a bash
 ```
 
 What's happening here, is that we jailbreak out of inside a docker container into the host (Moby VM), by:
