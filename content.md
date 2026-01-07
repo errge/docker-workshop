@@ -427,7 +427,7 @@ This is what we are doing currently on our runners.
 Let's explore how our student sandboxes are built with docker!
 
 ## Try to hack a bit on the student UI
-Go to expert.ethz.ch and load up the palindrom python sample.
+Go to expert.ethz.ch and load up the palindrom python sample (https://expert.ethz.ch/enrolled/p/demo/exercises).
 
 Implement a solution, and try a couple of different things:
   - running
@@ -469,31 +469,46 @@ Let's do a grep in all our container source files: `grep -r provided *`
 Let's read `cxenv-base-rhel8/scripts/.start` a little bit, and we see that
 `ACTION` is an env var, that needs to be provided.
 
-So we can pass this with `-e ACTION=actions` and e.g. `-e ACTIONS=repl`.
+So we can pass this with `-e ACTION=actions` and e.g. `-e ACTION=repl`.
 
-But of course `-e ACTIONS=test` still doesn't work, because we have no project.
+But of course `-e ACTION=run` still doesn't work, because we have no project.
 
-# Code Expert specific: Environments
-
-## Reproduce run/test locally
-Go to the `palindrom` subdir and:
+## Reproduce run locally
+Use the `palindrom` subdir and:
 
 ```
-docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
-Actions defined in `conf.yml` and scripts under `scripts/`.
+Actions are defined in the environment:
 
-Reminder: file permissions are problematic, simple solution:
+```
+docker run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11 ls -l /var/lib/cxrun/scripts
+docker run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11 cat /var/lib/cxrun/scripts/repl
+```
+
+But ever project can override these in `conf.yml` and the overriding
+scripts are typically stored inside the project under `scripts/`.
+(So on the machine it will become `/var/lib/cxrun/projectfiles/scripts`.)
+
+File permissions are problematic, simple solution:
 `sudo chown -R 601:601 .`, but remember to change it back and maybe
 `sudo chmod 0777` the files that you have to edit with your editor.
 
 For simple projects maybe it's best practice to try not to write to
 `/var/lib/cxrun/projectfiles/tmp`, instead use `/tmp`.
 
-## Build project from scratch
+## Reproduce run locally
 
-### Locally from Scratch
+```
+docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=test -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+```
+
+Question to audience: why is run also running the tests???
+
+## Build a project from scratch
+
+### Project structure
 
 ```
 mkdir new-project
@@ -528,7 +543,7 @@ echo "1 ok Non existing test passed." > tmp/result.log
 * "e": editable
 * "d": default
 
-.cx_metadata.json
+`.cx_metadata.json`:
 
 ```
 {
@@ -546,50 +561,3 @@ echo "1 ok Non existing test passed." > tmp/result.log
 * Import solution from file (button)
 * Set visibility
 * Publish solution & template
-
-# Bigger apps in Docker
-So far we only used single containers, but microservice apps nowadays
-need a lot of apps working together.
-
-For example zulip needs all of this to function:
-
-  - postgres
-  - memcached
-  - redis
-  - rabbitmq
-  - zulip itself
-
-Maintaining, and starting up all of this is a lot of work, and with
-big docker installations easy to lose track which rabbitmq belongs to
-which app.
-
-With docker compose, we can hold together all the parts of an
-installation like this.
-
-## Compose example
-```
-git clone https://github.com/zulip/docker-zulip.git
-```
-
-And look at `docker-compose.yml`
-
-## Configure it
-Register gitlab app at: https://gitlab.inf.ethz.ch/oauth/applications
-
-- Ports to `80xx`
-- `SETTING_EXTERNAL_HOST` to `<IP>:8443`
-- `ZULIP_AUTH_BACKENDS` to `GitLabAuthBackend`
-- `SETTING_SOCIAL_AUTH_GITLAB_KEY` to gitlab api key
-- `SECRETS_social_auth_gitlab_secret` to gitlab api secret
-- `SETTING_SOCIAL_AUTH_GITLAB_API_URL` to `https://gitlab.inf.ethz.ch`
-
-Start with: `docker compose up`
-
-Get realm creation URL with: `docker compose exec -u zulip zulip  /home/zulip/deployments/current/manage.py generate_realm_creation_link`
-
-## Let's play with it
-Try this out together and see how it goes.
-
-## Cleanup
-
-`docker compose rm` + `docker compose down -v`
