@@ -422,6 +422,7 @@ with `Dockerfile`s and images.
 This is what we are doing currently on our runners.
 
 # Lunch
+
 # Code Expert specific: Environments
 Let's explore how our student sandboxes are built with docker!
 
@@ -472,11 +473,13 @@ So we can pass this with `-e ACTION=actions` and e.g. `-e ACTIONS=repl`.
 
 But of course `-e ACTIONS=test` still doesn't work, because we have no project.
 
+# Code Expert specific: Environments
+
 ## Reproduce run/test locally
 Go to the `palindrom` subdir and:
 
 ```
-docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=run -it --rm cx/cxenv/python-3_11
+docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
 Actions defined in `conf.yml` and scripts under `scripts/`.
@@ -487,6 +490,9 @@ Reminder: file permissions are problematic, simple solution:
 
 For simple projects maybe it's best practice to try not to write to
 `/var/lib/cxrun/projectfiles/tmp`, instead use `/tmp`.
+
+## Build project from scratch
+
 
 
 # Bigger apps in Docker
