@@ -1,0 +1,4 @@
+script:
+  submit: /myscripts/echo
+  repl: /myscripts/myrepl
+  test: /myscripts/mytest

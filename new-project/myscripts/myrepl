@@ -1,0 +1,4 @@
+echo "[Welcome to my repl]"
+echo
+#sudo -u cxuser python3 -i
+bash

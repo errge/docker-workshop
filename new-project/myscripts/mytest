@@ -1,0 +1,2 @@
+echo "[Welcome to mytest]"
+echo "1 ok Non existing test passed." > tmp/result.log
