@@ -1,2 +1,7 @@
-echo "[Welcome to mytest]"
-echo "1 ok Non existing test passed." > tmp/result.log
+echo "[Welcome to mytest. See results.]"
+echo "<cx:tap>"
+echo "TAP version 13"
+echo "1..2"
+echo "ok 1 - Elfs are good."
+echo "not ok 2 - Orcs are bad."
+echo "</cx:tap>"
