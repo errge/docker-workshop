@@ -1,0 +1,5 @@
+script:
+  submit: /scripts/submit.sh
+  repl: /scripts/repl.sh
+  test: /scripts/test.sh
+  run: /scripts/run.sh

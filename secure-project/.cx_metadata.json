@@ -1,0 +1,10 @@
+{
+  "conf.yml": "h",
+  "scripts": "h",
+  "scripts/run.sh": "h",
+  "scripts/test.sh": "h",
+  "scripts/repl.sh": "h",
+  "scripts/submit.sh": "h",
+  "main.py": "d",
+  "template-output.txt": "h"
+}

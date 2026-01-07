@@ -461,6 +461,7 @@ Try to build this image locally:
     - `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/cxenv/python-3_11`
     - `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/cxenv/base-rhel8`
     - Only for cxrun (601): `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/base-rhel8 baser-rhel8`
+    - ISG base image: `docker image history registry.inf.ethz.ch/isg/rhel8-base:latest`
   - look into `Dockerfile`s on the way and try to understand them (if we have time)
 
 ## Reproduce the repl locally
@@ -570,14 +571,6 @@ echo "1 ok Non existing test passed." > tmp/result.log
 * Publish solution & template
 
 ## cxrun / cxuser security
-
-todo:
-- code expert uion gergo csinal maganak uj security taskot, amihez egyszeruen imporatlja a mate scratch-et grafikusan
-- most a projectet atalakitani securityve:
-  - repl + run + test + submit-ba: jol iranyzott sudo
-  - test-ben: lefuttatni a user kodjat, ami eloallitja a /tmp/fib100.txt-t
-  - test-ben: cmp-zni ezt egy titkos fajllal, ami nem csak hidden szinten titkos, hanem a repl nem latja (EZ A DEMO!)
-  - XML-t eloallitani a cmp visszateresi ertek alapjan
 
 content:
   - belepni az egyszeru palindrom-ba (no security)
