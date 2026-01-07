@@ -493,7 +493,59 @@ For simple projects maybe it's best practice to try not to write to
 
 ## Build project from scratch
 
+### Locally from Scratch
 
+```
+mkdir new-project
+cd new-project
+mkdir myscripts
+vim myscripts/echo    # echo "Hello world"
+cat conf.yml
+script:
+  submit: /myscripts/echo
+  repl: /myscripts/myrepl
+  test: /myscripts/mytest
+
+docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=submit -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+
+cat myscripts/myrepl
+echo "[Welcome to my repl]"
+echo
+python3 -i
+
+docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=repl -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+
+mkdir tmp
+chmod 0777 tmp
+cat myscripts/mytest
+echo "1 ok Non existing test passed." > tmp/result.log
+```
+
+### Metadata
+
+* "h": hidden
+* "r": read-only
+* "e": editable
+* "d": default
+
+.cx_metadata.json
+
+```
+{
+  "myscripts": "h",
+  "main.py": "d",
+  "conf.yml": "h"
+}
+```
+
+### Import
+
+* Course Management / Add Code Task (empty with right Environment)
+* Project
+* Solution (tab)
+* Import solution from file (button)
+* Set visibility
+* Publish solution & template
 
 # Bigger apps in Docker
 So far we only used single containers, but microservice apps nowadays
