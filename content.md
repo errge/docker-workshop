@@ -571,13 +571,56 @@ echo "1 ok Non existing test passed." > tmp/result.log
 * Publish solution & template
 
 ## cxrun / cxuser security
+For interesting challenge-like homework or exams, it would be cool to be
+able to hide the solution, so the students really have to do some calculation.
 
-content:
-  - belepni az egyszeru palindrom-ba (no security)
-  - subprocessz kitores
-  - cat /etc/passwd
-  - ls -ld /var/lib/cxrun /var/lib/cxuser
-  - id cxrun ; id cxuser
-  - show sudoers
-  - demo sudo both directions (but only one direction works)
-  - how to use these features creatively to protect secret output: project demo
+Imagine the following task:
+  - given the math like python definition of fibonaccy (`f(n) = f(n-1) + f(n-2)`)
+  - have to calculate the 100th element of the sequence
+  - normal recursion will not do, one has to think a little bit at least
+
+We would like to write the test for this task by simply comparing the
+output of the student's program with the stored correct solution.
+
+The problem is that some students will simply try to hunt down the
+file inside `/var/lib/cxrun/projectfiles`.
+
+To make this kind of scenarios possible CX provides the following optional security framework:
+
+  - by default every run/test/submit/repl starts with UID 601 (cxrun)
+  - the cxrun user has the possibility to sudo to UID 602 (cxuser)
+  - cxuser doesn't have the possibility to sudo back to cxrun
+  - therefore being cxuser is a one-way street
+  - the run/test/submit/repl scripts can sudo at the right moment!
+
+Demo: demo this sudo capability in the REPL window!
+
+```
+cat /etc/passwd
+ls -ld /var/lib/cxrun /var/lib/cxuser
+id cxrun ; id cxuser
+sudo -u cxuser bash
+  sudo -u cxrun bash
+```
+
+https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/base-rhel8/-/blob/master/sudoers?ref_type=heads
+
+### Demo
+Use the `secure-project.tar` as a demo project, and find the crucial
+mistake, while doing some fun linear algebra with sympy!
+
+```
+from sympy import Matrix
+
+m = Matrix([[1,2], [3,4]])
+hugenumbers = m ** 100
+print(hugenumbers[0])
+```
+
+Debugging with the audience: how come sympy is not found in numphitet's python?
+
+Bonus audience question: we demonstrated a logarithmic algorithm for
+computing the nth Fibonacci number (matrix exponentiation is
+logarithmic in the exponent).  On the other hand, when represented in
+binary form, the nth Fibonacci number is around n bits long, so the output
+is linear.  Did we just compute a linear output in logarithmic time?
