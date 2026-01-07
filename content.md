@@ -568,3 +568,23 @@ echo "1 ok Non existing test passed." > tmp/result.log
 * Import solution from file (button)
 * Set visibility
 * Publish solution & template
+
+## cxrun / cxuser security
+
+todo:
+- code expert uion gergo csinal maganak uj security taskot, amihez egyszeruen imporatlja a mate scratch-et grafikusan
+- most a projectet atalakitani securityve:
+  - repl + run + test + submit-ba: jol iranyzott sudo
+  - test-ben: lefuttatni a user kodjat, ami eloallitja a /tmp/fib100.txt-t
+  - test-ben: cmp-zni ezt egy titkos fajllal, ami nem csak hidden szinten titkos, hanem a repl nem latja (EZ A DEMO!)
+  - XML-t eloallitani a cmp visszateresi ertek alapjan
+
+content:
+  - belepni az egyszeru palindrom-ba (no security)
+  - subprocessz kitores
+  - cat /etc/passwd
+  - ls -ld /var/lib/cxrun /var/lib/cxuser
+  - id cxrun ; id cxuser
+  - show sudoers
+  - demo sudo both directions (but only one direction works)
+  - how to use these features creatively to protect secret output: project demo
