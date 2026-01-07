@@ -495,10 +495,12 @@ File permissions are problematic, simple solution:
 `sudo chown -R 601:601 .`, but remember to change it back and maybe
 `sudo chmod 0777` the files that you have to edit with your editor.
 
-For simple projects maybe it's best practice to try not to write to
-`/var/lib/cxrun/projectfiles/tmp`, instead use `/tmp`.
+After file permissions are fixed, look at `palindrom/tmp/result.log`,
+this is the "output contract" between student projects and the UI tab
+showing the red/green test result.  The filename (`tmp/result.log`) is
+CX specific, but the format is an open standard: https://testanything.org/
 
-## Reproduce run locally
+## Reproduce test locally
 
 ```
 docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=test -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
