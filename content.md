@@ -457,12 +457,18 @@ Let's start at https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/python-3
 Try to build this image locally:
 
   - backtrack on the path formed from the `FROM` fields
-  - checkout all the github repos needed
-  - build from the ground up
+  - checkout all the github repos needed:
+    - `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/cxenv/python-3_11`
+    - `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/cxenv/base-rhel8`
+    - Only for cxrun (601): `git clone gitlab.inf.ethz.ch:OU-LECTURERS/containers/base-rhel8 baser-rhel8`
   - look into `Dockerfile`s on the way and try to understand them (if we have time)
 
 ## Reproduce the repl locally
 Now, that we have the image, let's try to run it, and we see `ACTION` is missing.
+
+```
+docker run -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+```
 
 Let's do a grep in all our container source files: `grep -r provided *`
 
@@ -491,9 +497,7 @@ But ever project can override these in `conf.yml` and the overriding
 scripts are typically stored inside the project under `scripts/`.
 (So on the machine it will become `/var/lib/cxrun/projectfiles/scripts`.)
 
-File permissions are problematic, simple solution:
-`sudo chown -R 601:601 .`, but remember to change it back and maybe
-`sudo chmod 0777` the files that you have to edit with your editor.
+File permissions are problematic, simple solution: `chmod 0777 palindrom/tmp`.
 
 After file permissions are fixed, look at `palindrom/tmp/result.log`,
 this is the "output contract" between student projects and the UI tab
@@ -503,6 +507,7 @@ CX specific, but the format is an open standard: https://testanything.org/
 ## Reproduce test locally
 
 ```
+chmod 0777 palindrom/cx_audit
 docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=test -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
