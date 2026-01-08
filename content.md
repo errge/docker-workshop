@@ -484,7 +484,7 @@ But of course `-e ACTION=run` still doesn't work, because we have no project.
 Use the `palindrom` subdir and:
 
 ```
-docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -v ./palindrom:/var/lib/cxrun/projectfiles -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
 Actions are defined in the environment:
@@ -509,7 +509,7 @@ CX specific, but the format is an open standard: https://testanything.org/
 
 ```
 chmod 0777 palindrom/cx_audit
-docker run -v ./palindrom:/var/lib/cxrun/projectfiles:z -e ACTION=test -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -v ./palindrom:/var/lib/cxrun/projectfiles -e ACTION=test -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
 Question to audience: why is run also running the tests???
@@ -529,14 +529,14 @@ script:
   repl: /myscripts/myrepl
   test: /myscripts/mytest
 
-docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=submit -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=submit -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 
 cat myscripts/myrepl
 echo "[Welcome to my repl]"
 echo
 python3 -i
 
-docker run -v ./:/var/lib/cxrun/projectfiles:z -e ACTION=repl -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=repl -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 
 mkdir tmp
 chmod 0777 tmp
