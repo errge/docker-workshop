@@ -468,7 +468,7 @@ Try to build this image locally:
 Now, that we have the image, let's try to run it, and we see `ACTION` is missing.
 
 ```
-docker run -e ACTION=run -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
+docker run -e ACTION=repl -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 ```
 
 Let's do a grep in all our container source files: `grep -r provided *`
@@ -523,25 +523,34 @@ mkdir new-project
 cd new-project
 mkdir myscripts
 vim myscripts/echo    # echo "Hello world"
-cat conf.yml
-script:
-  submit: /myscripts/echo
-  repl: /myscripts/myrepl
-  test: /myscripts/mytest
+cat >conf.yml <<EOF
+  script:
+    submit: /myscripts/echo
+    repl: /myscripts/myrepl
+    test: /myscripts/mytest
+EOF
 
 docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=submit -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 
-cat myscripts/myrepl
-echo "[Welcome to my repl]"
-echo
-python3 -i
+cat >myscripts/myrepl <<EOF
+  echo "[Welcome to my repl]"
+  echo
+  python3 -i
+EOF
 
 docker run -v ./:/var/lib/cxrun/projectfiles -e ACTION=repl -it --rm cxhub.ethz.ch/cx/cxenv/python-3_11
 
 mkdir tmp
 chmod 0777 tmp
-cat myscripts/mytest
-echo "1 ok Non existing test passed." > tmp/result.log
+cat >myscripts/mytest <<EOF
+  echo "[Welcome to mytest. See results.]"
+  echo "<cx:tap>"
+  echo "TAP version 13"
+  echo "1..2"
+  echo "ok 1 - Elfs are good."
+  echo "not ok 2 - Orcs are bad."
+  echo "</cx:tap>"
+EOF
 ```
 
 ### Metadata
@@ -575,7 +584,7 @@ For interesting challenge-like homework or exams, it would be cool to be
 able to hide the solution, so the students really have to do some calculation.
 
 Imagine the following task:
-  - given the math like python definition of fibonaccy (`f(n) = f(n-1) + f(n-2)`)
+  - given the math like python definition of Fibonacci (`f(n) = f(n-1) + f(n-2)`)
   - have to calculate the 100th element of the sequence
   - normal recursion will not do, one has to think a little bit at least
 
